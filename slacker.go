@@ -40,8 +40,12 @@ func (c *APIClient) RunMethod(name string) ([]byte, error) {
 	return ioutil.ReadAll(resp.Body)
 }
 
-func (c *APIClient) slackMethod(method string) (*http.Response, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/%s?token=%s", c.SlackURL, method, c.token), nil)
+func (c *APIClient) slackMethod(method string, params ...string) (*http.Response, error) {
+	query := fmt.Sprintf("%s/%s?token=%s", c.SlackURL, method, c.token)
+	for param := range params {
+		query = fmt.Sprintf("%s/?=%s", param)
+	}
+	req, err := http.NewRequest("GET", query, nil)
 
 	if err != nil {
 		return nil, err
