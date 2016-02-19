@@ -30,8 +30,8 @@ func NewAPIClient(token string, url string) *APIClient {
 }
 
 // RunMethod runs an RPC method and returns the response body as a byte slice
-func (c *APIClient) RunMethod(name string) ([]byte, error) {
-	resp, err := c.slackMethod(name)
+func (c *APIClient) RunMethod(name string, params ...string) ([]byte, error) {
+	resp, err := c.slackMethod(name, params...)
 	if err != nil {
 		return nil, err
 	}
