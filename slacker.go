@@ -42,7 +42,7 @@ func (c *APIClient) RunMethod(name string, params ...string) ([]byte, error) {
 
 func (c *APIClient) slackMethod(method string, params ...string) (*http.Response, error) {
 	query := fmt.Sprintf("%s/%s?token=%s", c.SlackURL, method, c.token)
-	for param := range params {
+	for _, param := range params {
 		query = fmt.Sprintf("%s/?=%s", param)
 	}
 	req, err := http.NewRequest("GET", query, nil)
