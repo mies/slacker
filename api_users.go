@@ -1,5 +1,10 @@
 package slacker
 
+import (
+	"fmt"
+	"log"
+)
+
 // User represents a Slack user object
 // https://api.slack.com/types/user
 type User struct {
@@ -15,6 +20,10 @@ type User struct {
 	HasFiles bool   `json:"has_files"`
 
 	Profile `json:"profile"`
+}
+
+type UserResponse struct {
+	User *User `json:"user"`
 }
 
 // Profile represents a more detailed profile of a Slack user, including things
@@ -42,10 +51,21 @@ type UsersList struct {
 
 // UsersList returns all users in the team
 func (c *APIClient) UsersList() ([]*User, error) {
-	dest := UsersList{}
-	if err := c.slackMethodAndParse("users.list", &dest); err != nil {
+	l := UsersList{}
+	if err := c.slackMethodAndParse("users.list", &l); err != nil {
 		return nil, err
 	}
 
-	return dest.Users, nil
+	return l.Users, nil
+}
+
+// UserInfo returns all users in the team
+func (c *APIClient) UserInfo(userId string) (*User, error) {
+	u := UserResponse{}
+	if err := c.slackMethodAndParse("users.info", &u, fmt.Sprintf("user=%s", userId)); err != nil {
+		return nil, err
+	}
+	log.Println(u)
+
+	return u.User, nil
 }

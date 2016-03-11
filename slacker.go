@@ -43,8 +43,9 @@ func (c *APIClient) RunMethod(name string, params ...string) ([]byte, error) {
 func (c *APIClient) slackMethod(method string, params ...string) (*http.Response, error) {
 	query := fmt.Sprintf("%s/%s?token=%s", c.SlackURL, method, c.token)
 	for _, param := range params {
-		query += fmt.Sprintf("?=%s", param)
+		query += fmt.Sprintf("&%s", param)
 	}
+	fmt.Println(query)
 	req, err := http.NewRequest("GET", query, nil)
 
 	if err != nil {
@@ -54,8 +55,8 @@ func (c *APIClient) slackMethod(method string, params ...string) (*http.Response
 	return c.client.Do(req)
 }
 
-func (c *APIClient) slackMethodAndParse(method string, dest interface{}) error {
-	resp, err := c.slackMethod(method)
+func (c *APIClient) slackMethodAndParse(method string, dest interface{}, params ...string) error {
+	resp, err := c.slackMethod(method, params...)
 	if err != nil {
 		return err
 	}
